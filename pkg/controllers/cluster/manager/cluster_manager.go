@@ -147,6 +147,7 @@ func (m *ClusterManager) Sync(ctx context.Context) bool {
 			return false
 		}
 	}
+	glog.Info("Cluster status: %+v", clusterStatus)
 
 	// Set the cluster status so that the in-cluster healthcheck gets the
 	// most up to date information.
