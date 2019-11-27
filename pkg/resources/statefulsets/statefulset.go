@@ -26,6 +26,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/klog/glog"
 
 	"github.com/oracle/mysql-operator/pkg/apis/mysql/v1alpha1"
 	"github.com/oracle/mysql-operator/pkg/constants"
@@ -256,9 +257,12 @@ func mysqlServerContainer(cluster *v1alpha1.Cluster, mysqlServerImage string, ro
 
 func mysqlAgentContainer(cluster *v1alpha1.Cluster, mysqlAgentImage string, rootPassword v1.EnvVar, members int) v1.Container {
 	agentVersion := version.GetBuildVersion()
+	glog.Infof("DEBUG: Agent Version var: %v", agentVersion)
 	if version := os.Getenv("MYSQL_AGENT_VERSION"); version != "" {
+		glog.Infof("DEBUG: Setting Env Version: %v", version)
 		agentVersion = version
 	}
+	glog.Infof("DEBUG: Current Agent Version: %v", agentVersion)
 
 	replicationGroupSeeds := getReplicationGroupSeeds(cluster.Name, members)
 
@@ -309,6 +313,7 @@ func mysqlAgentContainer(cluster *v1alpha1.Cluster, mysqlAgentImage string, root
 
 // NewForCluster creates a new StatefulSet for the given Cluster.
 func NewForCluster(cluster *v1alpha1.Cluster, images operatoropts.Images, serviceName string) *apps.StatefulSet {
+
 	rootPassword := mysqlRootPassword(cluster)
 	members := int(cluster.Spec.Members)
 	baseServerID := cluster.Spec.BaseServerID
