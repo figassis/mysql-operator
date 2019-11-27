@@ -397,6 +397,7 @@ func (m *MySQLController) syncHandler(key string) error {
 	}
 
 	// Upgrade the required component resources the current MySQLOperator version.
+	glog.V(4).Infof("ensuring MySQL Operator version: %s", buildversion.GetBuildVersion())
 	if err := m.ensureMySQLOperatorVersion(cluster, ss, buildversion.GetBuildVersion()); err != nil {
 		return errors.Wrap(err, "ensuring MySQL Operator version: "+buildversion.GetBuildVersion())
 	}
