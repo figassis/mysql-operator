@@ -1,4 +1,5 @@
 #!/bin/bash
+GO111MODULE=off
 tag=latest
 PKG=$GOPATH/src/github.com/oracle/mysql-operator
 
