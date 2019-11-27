@@ -22,6 +22,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/golang/glog"
+
 	"github.com/pkg/errors"
 
 	"github.com/oracle/mysql-operator/pkg/cluster/innodb"
@@ -147,6 +149,7 @@ func (i *Instance) WhitelistCIDR() (string, error) {
 		}
 	}
 
+	glog.Infof("pod IP %q is not a private IPv4 address", i.IP.String())
 	return "", errors.Errorf("pod IP %q is not a private IPv4 address", i.IP.String())
 }
 

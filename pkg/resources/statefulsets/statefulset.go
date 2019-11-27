@@ -20,7 +20,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/golang/glog"
 	apps "k8s.io/api/apps/v1beta1"
 	"k8s.io/api/core/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -196,7 +195,6 @@ func mysqlServerContainer(cluster *v1alpha1.Cluster, mysqlServerImage string, ro
 		"--binlog-format=ROW",
 		"--master-info-repository=TABLE",
 		"--relay-log-info-repository=TABLE",
-		"--group-replication-communication-debug-options=GCS_DEBUG_ALL",
 		"--transaction-write-set-extraction=XXHASH64",
 		fmt.Sprintf("--relay-log=%s-${index}-relay-bin", cluster.Name),
 		fmt.Sprintf("--report-host=\"%[1]s-${index}.%[1]s\"", cluster.Name),
@@ -258,12 +256,9 @@ func mysqlServerContainer(cluster *v1alpha1.Cluster, mysqlServerImage string, ro
 
 func mysqlAgentContainer(cluster *v1alpha1.Cluster, mysqlAgentImage string, rootPassword v1.EnvVar, members int) v1.Container {
 	agentVersion := version.GetBuildVersion()
-	glog.Infof("DEBUG: Agent Version var: %v", agentVersion)
 	if version := os.Getenv("MYSQL_AGENT_VERSION"); version != "" {
-		glog.Infof("DEBUG: Setting Env Version: %v", version)
 		agentVersion = version
 	}
-	glog.Infof("DEBUG: Current Agent Version: %v", agentVersion)
 
 	replicationGroupSeeds := getReplicationGroupSeeds(cluster.Name, members)
 
