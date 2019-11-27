@@ -16,6 +16,7 @@ package cluster
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -516,6 +517,13 @@ func (m *MySQLController) ensureMySQLOperatorVersion(c *v1alpha1.Cluster, ss *ap
 	if requiresMySQLAgentStatefulSetUpgrade(ss, container, operatorVersion) {
 		glog.Infof("Upgrading cluster statefulset '%s/%s' to latest operator version: %s", ss.Namespace, ss.Name, operatorVersion)
 		updated := updateStatefulSetToOperatorVersion(ss.DeepCopy(), m.opConfig.Images.MySQLAgentImage, operatorVersion)
+
+		ssJSON, _ := json.MarshalIndent(ss, "", " ")
+		updatedJSON, _ := json.MarshalIndent(updated, "", " ")
+
+		glog.Infof("DEBUG: Original: %s", ssJSON)
+		glog.Infof("DEBUG: Updated: %s", updatedJSON)
+
 		err = m.statefulSetControl.Patch(ss, updated)
 		if err != nil {
 			return errors.Wrap(err, "upgrade operator version: PatchStatefulSet failed")
