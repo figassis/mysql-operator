@@ -95,14 +95,17 @@ func NewLocalClusterManger(kubeclient kubernetes.Interface, kubeInformerFactory 
 
 func (m *ClusterManager) getClusterStatus(ctx context.Context) (*innodb.ClusterStatus, error) {
 	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	glog.Errorf("ctx: %+v", ctx)
 	defer cancel()
 	clusterStatus, localMSHErr := m.localMySh.GetClusterStatus(ctx)
 	if localMSHErr != nil {
+		glog.Errorf("getClusterStatus:localMSHErr: %+v", localMSHErr)
 		var err error
 		clusterStatus, err = getClusterStatusFromGroupSeeds(ctx, m.kubeClient, m.Instance)
 		if err != nil {
 			// NOTE: We return the localMSHErr rather than the error here so that we
 			// can dispatch on it.
+			glog.Errorf("getClusterStatus:err: %+v", err)
 			return nil, errors.Wrap(localMSHErr, "getting cluster status from group seeds")
 		}
 	}
@@ -122,6 +125,8 @@ func (m *ClusterManager) Sync(ctx context.Context) bool {
 	clusterStatus, err := m.getClusterStatus(ctx)
 	if err != nil {
 		myshErr, ok := errors.Cause(err).(*mysqlsh.Error)
+		glog.Errorf("mysqlsh: %+v", myshErr)
+		glog.Errorf("cluster status: %+v", clusterStatus)
 		if !ok {
 			glog.Errorf("Failed to get the cluster status: %+v", err)
 			return false
