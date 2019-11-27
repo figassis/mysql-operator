@@ -27,6 +27,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/imdario/mergo"
 
+	buildversion "github.com/oracle/mysql-operator/pkg/version"
 	"k8s.io/api/core/v1"
 	restclient "k8s.io/client-go/rest"
 	clientauth "k8s.io/client-go/tools/auth"
@@ -529,6 +530,7 @@ func (config *inClusterClientConfig) Possible() bool {
 // are passed in we fallback to inClusterConfig. If inClusterConfig fails, we fallback
 // to the default config.
 func BuildConfigFromFlags(masterUrl, kubeconfigPath string) (*restclient.Config, error) {
+	glog.V(4).Infof("Operator version: %s", buildversion.GetBuildVersion())
 	if kubeconfigPath == "" && masterUrl == "" {
 		glog.Warningf("Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.")
 		kubeconfig, err := restclient.InClusterConfig()
