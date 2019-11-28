@@ -133,7 +133,7 @@ func (m *ClusterManager) Sync(ctx context.Context) bool {
 
 		// We can't find a cluster. Bootstrap if we're the first member of the
 		// StatefulSet.
-		if m.Instance.Ordinal <= 2 {
+		if m.Instance.Ordinal == 0 {
 			clusterStatus, err = m.bootstrap(ctx, myshErr)
 			if err != nil {
 				glog.Errorf("Error bootstrapping cluster: %v", err)
