@@ -299,11 +299,7 @@ func (m *ClusterManager) handleInstanceNotFound(ctx context.Context, primaryAddr
 		"ipWhitelist":   whitelistCIDR,
 	}); err != nil {
 		glog.Errorf("Failed to add to cluster: %v", err)
-		if _, err = m.rebootFromOutage(ctx); err != nil {
-			glog.Errorf("Error bootstrapping cluster: %v", err)
-			return false
-		}
-		return true
+		return false
 	}
 	return true
 }
