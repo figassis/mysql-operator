@@ -133,12 +133,19 @@ func (i *Instance) PodName() string {
 func (i *Instance) WhitelistCIDR() (string, error) {
 	var privateRanges []*net.IPNet
 
-	for _, addrRange := range []string{
-		"10.0.0.0/8",
-		"172.16.0.0/12",
-		"192.168.0.0/16",
-		"100.64.0.0/10", // IPv4 shared address space (RFC 6598), improperly used by kops
-	} {
+	whitelist := map[string]string{
+		"10.0.0.0/8":     "",
+		"172.16.0.0/12":  "",
+		"192.168.0.0/16": "",
+		"100.64.0.0/10":  "", // IPv4 shared address space (RFC 6598), improperly used by kops
+	}
+
+	customWhitelist := strings.Split(strings.Replace(os.Getenv("WHITELIST"), " ", "", -1), ",")
+	for _, cidr := range customWhitelist {
+		whitelist[cidr] = ""
+	}
+
+	for addrRange := range whitelist {
 		_, block, _ := net.ParseCIDR(addrRange)
 		privateRanges = append(privateRanges, block)
 	}
