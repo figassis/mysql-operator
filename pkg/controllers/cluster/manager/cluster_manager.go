@@ -126,7 +126,6 @@ func (m *ClusterManager) Sync(ctx context.Context) bool {
 	if err != nil {
 		myshErr, ok := errors.Cause(err).(*mysqlsh.Error)
 		glog.Errorf("mysqlsh: %+v", myshErr)
-		glog.Errorf("cluster status: %+v", clusterStatus)
 		if !ok {
 			glog.Errorf("Failed to get the cluster status: %+v", err)
 			return false
@@ -147,7 +146,6 @@ func (m *ClusterManager) Sync(ctx context.Context) bool {
 			return false
 		}
 	}
-	glog.Info("Cluster status: %+v", clusterStatus)
 
 	// Set the cluster status so that the in-cluster healthcheck gets the
 	// most up to date information.
