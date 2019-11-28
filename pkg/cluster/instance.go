@@ -131,7 +131,7 @@ func (i *Instance) PodName() string {
 
 // WhitelistCIDR returns the CIDR range to whitelist for GR based on the Pod's IP.
 func (i *Instance) WhitelistCIDR() (string, error) {
-	return "0.0.0.0/0,localhost,127.0.0.1,10.0.0.0/8,10.200.0.0/16", nil
+	return "localhost,127.0.0.1,10.0.0.0/8,10.200.0.0/16,10.32.0.0/16,10.30.0.0/16", nil
 	var privateRanges []*net.IPNet
 
 	whitelist := map[string]string{
